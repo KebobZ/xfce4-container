@@ -1,0 +1,13 @@
+/* Top bar: dark text on the translucent light bar, with room at the edges. */
+.xfce4-panel label {
+  color: #1d1d1f;
+}
+
+.xfce4-panel button {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+vte-terminal {
+  padding: 10px 14px;
+}

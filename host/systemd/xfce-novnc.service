@@ -1,0 +1,24 @@
+[Unit]
+Description=noVNC gateway for the XFCE desktop container (loopback only)
+After=network.target incus.service
+
+[Service]
+Type=simple
+DynamicUser=yes
+# NOVNC_AUTH=user:password, created by host/install-novnc.sh (root-only file).
+EnvironmentFile=/etc/xfce4-container/auth.env
+ExecStart=/usr/bin/websockify \
+    --web=/usr/share/novnc \
+    --web-auth \
+    --auth-plugin=BasicHTTPAuth \
+    --auth-source=${NOVNC_AUTH} \
+    127.0.0.1:6080 \
+    127.0.0.1:5901
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

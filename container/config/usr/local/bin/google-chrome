@@ -1,0 +1,12 @@
+#!/bin/sh
+# The desktop runs as a non-root user inside a container where Chrome's sandbox cannot
+# start. Every launch path (PATH, menus, dock, xdg-open) goes through this wrapper. The
+# "unsupported command-line flag" banner is off by the managed policy in
+# /etc/opt/chrome/policies/managed/desktop.json.
+exec /opt/google/chrome/google-chrome \
+  --no-sandbox \
+  --disable-dev-shm-usage \
+  --no-first-run \
+  --no-default-browser-check \
+  --password-store=basic \
+  "$@"

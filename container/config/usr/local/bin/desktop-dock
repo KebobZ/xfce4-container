@@ -1,0 +1,15 @@
+#!/bin/sh
+# XFCE autostart: seed Plank's launchers for this HOME, then run the dock.
+# Dock settings (theme, item order) come from the system dconf database.
+set -eu
+
+launchers="${HOME}/.config/plank/dock1/launchers"
+mkdir -p "${launchers}"
+
+write_item() {
+  printf '[PlankDockItemPreferences]\nLauncher=file://%s\n' "$2" >"${launchers}/$1.dockitem"
+}
+write_item google-chrome /usr/local/share/applications/google-chrome.desktop
+write_item xfce4-terminal /usr/share/applications/xfce4-terminal.desktop
+
+exec plank

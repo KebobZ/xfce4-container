@@ -1,0 +1,18 @@
+[Unit]
+Description=Cloudflare quick tunnel to noVNC (random trycloudflare.com URL)
+Wants=xfce-novnc.service
+After=xfce-novnc.service network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+ExecStart=/usr/bin/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:6080
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

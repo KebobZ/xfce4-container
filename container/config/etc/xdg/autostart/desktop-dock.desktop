@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Dock
+Exec=/usr/local/bin/desktop-dock
+OnlyShowIn=XFCE;
+NoDisplay=true
+X-XFCE-Autostart-Override=true

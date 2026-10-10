@@ -1,0 +1,17 @@
+[Unit]
+Description=XFCE session on display :1
+Requires=xfce-vnc.service
+After=xfce-vnc.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:1
+Environment=XDG_SESSION_TYPE=x11
+Environment=XDG_CURRENT_DESKTOP=XFCE
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 20); do [ -S /tmp/.X11-unix/X1 ] && exit 0; sleep 1; done; exit 1'
+ExecStart=/usr/bin/dbus-run-session -- /usr/bin/startxfce4
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

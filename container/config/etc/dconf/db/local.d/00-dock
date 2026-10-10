@@ -1,0 +1,11 @@
+[net/launchpad/plank/docks/dock1]
+dock-items=['google-chrome.dockitem', 'xfce4-terminal.dockitem']
+theme='WhiteSur-Light'
+icon-size=48
+zoom-enabled=true
+zoom-percent=140
+hide-mode=0
+position='bottom'
+alignment='center'
+show-dock-item=false
+lock-items=true
