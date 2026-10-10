@@ -9,8 +9,8 @@ from a browser through noVNC on the host's loopback interface.
 - **Desktop:** XFCE on a TigerVNC display (`:1`), WhiteSur GTK/icons/cursors, Inter and
   JetBrains Mono fonts, a translucent top bar, a Plank dock with Chrome and the terminal,
   and a Catppuccin terminal palette.
-- **Browser:** Google Chrome, launched through a `--no-sandbox` wrapper. The container's
-  desktop user cannot start Chrome's sandbox.
+- **Browser:** Google Chrome with its sandbox on. The host allows the unprivileged user
+  namespaces the sandbox needs (`host/allow-userns.sh`).
 - **Access:** noVNC at `http://127.0.0.1:6080/vnc.html` on the host, behind a Basic-auth
   login. The optional quick tunnel publishes that page at a random public URL.
 
@@ -51,7 +51,7 @@ Full output goes to `build.log`.
 | 2 | Host packages and container | Installs Incus, noVNC, and websockify; launches `xfce` |
 | 3 | Container packages and desktop user | Copies the project in; installs XFCE, TigerVNC, Docker, fonts |
 | 4 | WhiteSur theme and wallpaper | Installs WhiteSur from pinned refs; generates the wallpaper |
-| 5 | Google Chrome | Installs Google's `.deb` |
+| 5 | Google Chrome | Allows user namespaces on the host, installs Chrome's `.deb`, checks the sandbox |
 | 6 | Desktop session | Installs config and user services; waits for XFCE on `:1`; sets passwordless sudo per `DESKTOP_SUDO` |
 | 7 | Login and noVNC gateway | Creates the login, the loopback VNC proxy, and the gateway service |
 | 8 | Resource limits | Container process limit and optional disk size |
@@ -64,6 +64,7 @@ Full output goes to `build.log`.
 build.sh                 orchestrates the stages and shows progress
 host/                    runs on the Ubuntu host (sudo)
   bootstrap-incus.sh     Incus, the container, UFW rules for the bridge
+  allow-userns.sh        host sysctl that lets Chrome's sandbox start
   install-novnc.sh       noVNC login, VNC proxy device, gateway service
   install-quick-tunnel.sh
   resource-policy.sh
@@ -96,8 +97,9 @@ above is the only gate, so keep the quick tunnel off unless you need public acce
   enough for XFCE and Chrome, and needs no DRM devices.
 - **Desktop sudo is a loosening.** With `DESKTOP_SUDO=yes`, anything running as `desktop`,
   Chrome included, can become root in the container. The container is still unprivileged.
-- **Chrome always runs with `--no-sandbox`.** The desktop user cannot create the user
-  namespaces Chrome's sandbox needs. The wrapper is in `container/config/usr/local/bin/google-chrome`.
+- **Chrome's sandbox needs a host setting.** `host/allow-userns.sh` sets
+  `kernel.apparmor_restrict_unprivileged_userns=0` on the host. That's a host-wide weakening
+  of an Ubuntu hardening default. Stage 5 checks that the sandbox starts.
 - **Chrome tracks Google's current stable build,** so rebuilding or upgrading the
   container pulls a newer Chrome.
 - **Container cleanup:** `sudo incus delete xfce --force` removes the container. Then

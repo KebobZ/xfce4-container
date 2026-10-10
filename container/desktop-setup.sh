@@ -50,7 +50,7 @@ chown -R "$USER_NAME:$USER_NAME" "$USER_HOME/.config"
 # XFCE reads its default panel layout from here.
 install -D -m 644 /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml /etc/xdg/xfce4/panel/default.xml
 
-# Chrome launchers always go through the --no-sandbox wrapper.
+# Chrome launchers always go through the wrapper that sets its flags.
 for name in google-chrome-stable chromium chromium-browser; do
     ln -sfn /usr/local/bin/google-chrome "/usr/local/bin/$name"
 done

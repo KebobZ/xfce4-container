@@ -217,7 +217,9 @@ run_step "Fetch and install WhiteSur, generate wallpaper" \
     incus_ct bash "$REMOTE_DIR/container/theme.sh"
 
 stage "Google Chrome"
-run_step "Install Google Chrome" incus_ct bash "$REMOTE_DIR/container/chrome-install.sh"
+run_step "Allow user namespaces on the host (Chrome sandbox)" sudo "$REPO/host/allow-userns.sh"
+run_step "Install Google Chrome and check its sandbox" \
+    incus_ct bash "$REMOTE_DIR/container/chrome-install.sh"
 
 stage "Desktop session"
 run_step "Install desktop config and user services" \

@@ -18,3 +18,15 @@ else
 fi
 
 /opt/google/chrome/google-chrome --version
+
+# Headless run as the desktop user, with the sandbox on. Fails when the sandbox cannot start.
+OUT=$(mktemp)
+trap 'rm -f "$OUT"' EXIT
+if runuser -u desktop -- timeout 90 /opt/google/chrome/google-chrome \
+    --headless=new --disable-gpu --no-first-run --dump-dom about:blank >"$OUT" 2>&1; then
+    echo "Chrome sandbox works for the desktop user."
+else
+    echo "Chrome failed to start with its sandbox for the desktop user:" >&2
+    tail -n 20 "$OUT" >&2
+    exit 1
+fi
